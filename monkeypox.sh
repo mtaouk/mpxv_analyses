@@ -1,12 +1,13 @@
 #!/bin/bash
 
+##### Mona Taouk ######
+
 #######################
 ########### ###########
 ###### MONKEYPOX ######
 ########### ###########
 #######################
 
-#TEST
 
 #########Testing thresholds for Twist data
 cat /home/taouk/Monkeypox/ont/ont_consensus/32_A.consensus.fasta /home/taouk/Monkeypox/twist/twist_consensus/0/32_A.consensus.fasta /home/taouk/Monkeypox/twist/twist_consensus/3/32_A.consensus.fasta /home/taouk/Monkeypox/twist/twist_consensus/60/32_A.consensus.fasta /home/taouk/Monkeypox/twist/twist_consensus/75/32_A.consensus.fasta /home/taouk/Monkeypox/twist/twist_consensus/90/32_A.consensus.fasta > /home/taouk/Monkeypox/Compare_thresholds/32_A.fasta
@@ -51,12 +52,10 @@ iqtree -s consensus_pass_mafft_nogaps_masked_nodupref_0.1N.aln -B 1000 -nt 40 --
 
 
 ######### Making alignments that are just same patients
-# Extract from multifasta 
-for i in {1..68}; do seqkit grep -r -p "^${i}_" /home/taouk/Monkeypox/alignments/consensus_pass.fasta -p ON563414.3.masked > ${i}.fasta; done
-for i in {1..68}; do echo "augur align --s ${i}.fasta --o ${i}.aln --nthreads 20 --reference-name ON563414.3.masked" >> input_aligning.txt; done
-conda activate nextstrain
-dos2unix input_aligning.txt
-parallel -j 3 -k --bar {} :::: input_aligning.txt
+# Extract from processed alignment
+for i in {1..68}; do seqkit grep -r -p "^${i}_" -p ON563414.3.masked /home/taouk/Monkeypox/alignments/consensus_pass_mafft_nogaps_masked_nodupref_0.1N.aln > ${i}.aln; done
+ls *.aln > input.txt
+for i in $(cat input.txt); do snipit ${i} -o ${i} -r ON563414.3.masked -f pdf; done
 
 
 ######### Global sequences making alignment from scratch
