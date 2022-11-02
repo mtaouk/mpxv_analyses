@@ -49,6 +49,8 @@ seqkit grep -vp ON563414.3 consensus_pass_mafft_nogaps_masked.aln > consensus_pa
 /home/gtaiaroa/Capture/Paper/Align/Scripts/goalign-master/goalign clean sites --char=N -c 0.1 --ignore-case -i consensus_pass_mafft_nogaps_masked_nodupref.aln -o consensus_pass_mafft_nogaps_masked_nodupref_0.1N.aln
 # ML Tree
 iqtree -s consensus_pass_mafft_nogaps_masked_nodupref_0.1N.aln -B 1000 -nt 40 --polytomy
+#snp distances
+snp-dists consensus_pass_mafft_nogaps_masked_nodupref_0.1N.aln > snp_dist.tsv
 
 
 ######### Making alignments that are just same patients
@@ -82,7 +84,7 @@ bedtools maskfasta -fi nextclade.aligned_nogaps.fasta -fo nextclade.aligned_noga
 seqkit grep -vp "ON563414.3.masked" nextclade.aligned_nogaps_masked.fasta -o nextclade.aligned_nogaps_masked_nodupref.fasta
 seqkit grep -vp "ON563414.3.masked" nextclade.aligned_nogaps_masked_N0.1.fasta -o nextclade.aligned_nogaps_masked_N0.1_nodupref.fasta
 seqkit grep -vp "ON563414.3.masked" nextclade.aligned_nogaps.fasta -o nextclade.aligned_nogaps_nodupref.fasta
-
+#Trees
 cd Tree
 iqtree -s nextclade.aligned_nogaps_masked_nodupref.fasta -B 1000 -nt 40 -m HKY+F+I
 cd ../Tree2
