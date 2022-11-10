@@ -35,7 +35,7 @@ rm consensus_pass_oldnames.fasta
 
 
 ######### Making alignments
- mafft --thread 40 consensus_pass.fasta > consensus_pass_mafft.aln
+mafft --thread 40 consensus_pass.fasta > consensus_pass_mafft.aln
 # Remove all gaps from alignment (removes columns with any gaps)
 trimal -in consensus_pass_mafft.aln -out consensus_pass_mafft_nogaps.aln -gt 1
 # Make bedfile
@@ -106,4 +106,11 @@ cd D1604N
 iqtree -s Deleted.fasta -B 1000 -nt 30 --polytomy -m HKY+F+I
 
 
+######### ABOPEC sites
+cd apobec
+for i in $(cat ../alignments/ont_85_pass.txt); do zcat /home/taouk/Monkeypox/ont/ont_consensus/${i}.pass.vcf.gz > ${i}.vcf; done
+for i in $(cat ../alignments/ont_85_pass.txt); do sed 's/^##.*//p' ${i}.vcf > ${i}.tsv; done
+rm *.vcf
+for i in $(cat ../alignments/twist_90_pass.txt); do cat /home/taouk/Monkeypox/twist/twist_consensus/75/${i}.variants.tsv > ${i}.tsv; done
+mutation-profile -f ../mpx_us_22.fasta -m combine -r "ON563414.3" > output.txt
 
