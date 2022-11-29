@@ -68,47 +68,35 @@ nextclade dataset list
 conda activate Base
 cd Monkeypox/nextclade
 dos2unix include.txt
-seqkit grep -f include.txt /home/taouk/Monkeypox/global/sequences.fasta > global.fasta
-cat local.fasta global.fasta /home/taouk/Monkeypox/mpx_us_22.fasta > sequences_global_local.fasta
+seqkit grep -f include.txt /home/taouk/Monkeypox/global/PREVIOUS/sequences.fasta > global.fasta
+dos2unix include_new.txt
+seqkit grep -f include_new.txt /home/gtaiaroa/Mona/Victoria/Set.fasta > new_SNP.fasta
+cat local.fasta global.fasta new_SNP.fasta /home/taouk/Monkeypox/mpx_us_22.fasta > sequences_global_local.fasta
 seqtk comp sequences_global_local.fasta > comp.tsv
 conda activate nextclade
-nextclade run -D hmpxv/ sequences_global_local.fasta --output-all global
+nextclade run -D hmpxv/ sequences_global_local.fasta --output-all global_new
 
-nextclade run -D hmpxv/ /home/taouk/Monkeypox/nextclade/sequences_global_local.fasta --output-all global_hmpxv_141122
 
 ######### Global Trees
-cp /home/taouk/Monkeypox/nextclade/global/nextclade.aligned.fasta /home/taouk/Monkeypox/global/nextclade.aligned.fasta
+cd global
+cp /home/taouk/Monkeypox/nextclade/global_new/nextclade.aligned.fasta nextclade.aligned.fasta
 cd /home/taouk/Monkeypox/global
 conda activate Base
 trimal -in nextclade.aligned.fasta -out nextclade.aligned_nogaps.fasta -gt 1
 /home/gtaiaroa/Capture/Paper/Align/Scripts/goalign-master/goalign clean sites --char=N -c 0 --ignore-case -i nextclade.aligned_nogaps.fasta -o nextclade.aligned_nogaps_noNs.fasta
 #Trees
-cd Tree_raw
+cd global_newSNP
 cp /home/taouk/Monkeypox/global/nextclade.aligned.fasta nextclade.aligned.fasta
 conda activate Base
 iqtree -s nextclade.aligned.fasta -B 1000 -nt 40 -m HKY+F+I --polytomy
-cd Tree_nogaps_noNs
-conda activate Base
-cp ../nextclade.aligned_nogaps_noNs.fasta nextclade.aligned_nogaps_noNs.fasta
-iqtree -s nextclade.aligned_nogaps_noNs.fasta -B 1000 -nt 40 -m HKY+F+I --polytomy
+
 
 # Global tree with position missing
-cd D1604N
-iqtree -s Deleted.fasta -B 1000 -nt 30 --polytomy -m HKY+F+I
+cd Monkeypox/D1604N/new_alignment
+iqtree -s Deleted_new.fasta -B 1000 -nt 40 --polytomy -m HKY+F+I
 
 
-######### ABOPEC sites
-cd apobec
-for i in $(cat ../alignments/ont_85_pass.txt); do zcat /home/taouk/Monkeypox/ont/ont_consensus/${i}.pass.vcf.gz > ${i}.vcf; done
-for i in $(cat ../alignments/ont_85_pass.txt); do sed 's/^##.*//p' ${i}.vcf > ${i}.tsv; done
-rm *.vcf
-for i in $(cat ../alignments/twist_90_pass.txt); do cat /home/taouk/Monkeypox/twist/twist_consensus/75/${i}.variants.tsv > ${i}.tsv; done
-mutation-profile -f ../mpx_us_22.fasta -m combine -r "ON563414.3" > output.txt
-
-
-
-
-######### ALignments per patient using Rivers reference and masking for repeats (attempt)
+######### Alignments per patient using Rivers reference and masking for repeats (attempt)
 conda activate nextclade
 cd /home/taouk/Monkeypox/patient_alignment/rivers_usa
 nextclade run -D /home/taouk/Monkeypox/nextclade/hmpxv sequences.fasta --output-all local
@@ -119,11 +107,11 @@ cd individuals
 ls *.aln > input.txt
 for i in $(cat input.txt); do snipit ${i} -o ${i} -r ON563414.3.masked -f pdf --height 3 --width 10; done
 
-cd usa_coords
-for i in {1..68}; do seqkit grep -r -p "^${i}_" -p ON563414.3.masked consensus_pass_augur.aln > individuals/${i}.aln; done
-cd individuals
-ls *.aln > input.txt
-for i in $(cat input.txt); do snipit ${i} -o ${i} -r ON563414.3.masked -f pdf --height 3 --width 10; done
+
+######### SUmmary of Snipit for whole aligment
+snipit nextclade.aligned_edit.fasta -o all -r ON563414.3.masked -f pdf
+snp-sites -v -o test nextclade.aligned_edit.fasta
+
 
 
 
