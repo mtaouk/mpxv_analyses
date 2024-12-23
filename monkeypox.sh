@@ -75,6 +75,9 @@ cat local.fasta global.fasta new_SNP.fasta /home/taouk/Monkeypox/mpx_us_22.fasta
 seqtk comp sequences_global_local.fasta > comp.tsv
 conda activate nextclade
 nextclade run -D hmpxv/ sequences_global_local.fasta --output-all global_new
+conda activate Base
+cd global_new
+snp-dists nextclade.aligned.fasta > nextclade.aligned.distances.tsv
 
 
 ######### Global Trees
@@ -106,11 +109,21 @@ for i in {1..68}; do seqkit grep -r -p "^${i}_" -p ON563414.3.masked  /home/taou
 cd individuals
 ls *.aln > input.txt
 for i in $(cat input.txt); do snipit ${i} -o ${i} -r ON563414.3.masked -f pdf --height 3 --width 10; done
+######### Alignments removing the reference
+for i in {1..68}; do seqkit grep -pv 
 
 
 ######### SUmmary of Snipit for whole aligment
 snipit nextclade.aligned_edit.fasta -o all -r ON563414.3.masked -f pdf
 snp-sites -v -o test nextclade.aligned_edit.fasta
+
+
+####### VCFs
+/home/taouk/Monkeypox/ont/ont_consensus/66_D.pass.vcf
+/home/taouk/Monkeypox/ont/ont_consensus/66_C.pass.vcf.gz
+/home/taouk/Monkeypox/ont/ont_consensus/15_B.pass.vcf.gz
+/home/taouk/Monkeypox/ont/ont_consensus/15_A.pass.vcf.gz
+
 
 
 
