@@ -6,5 +6,5 @@ First published: 11 August 2023
 
 https://doi.org/10.1002/jmv.29029
 
-All code developed and central to this publication can be found in the attached .sh file. It is not meant to be run but instead contains the methods for each step of analysis. File paths are all relative to my local device. 
+All code developed and central to this publication can be found in the methods.sh file. It is not meant to be run but instead contains the methods for each step of analysis. File paths are all relative to my local device. 
 
